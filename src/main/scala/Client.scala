@@ -1,9 +1,10 @@
 import akka.actor.{Props, ActorSystem, Actor}
+import com.typesafe.config.ConfigFactory
 
 /**
  * client class to start the computation
  */
-class Client extends Actor{
+class ResultListener extends Actor{
 
     def receive = {
       case PiApproximation(pi, duration) ⇒
@@ -14,17 +15,17 @@ class Client extends Actor{
 }
 
 
-object Pi extends App {
+object Client extends App {
   calculate(nrOfElements = 10000, nrOfMessages = 10000)
 
   // actors and messages ...
 
   def calculate(nrOfElements: Int, nrOfMessages: Int) {
     // Create an Akka system
-    val system = ActorSystem("PiSystem")
+    val system = ActorSystem("PiClient", ConfigFactory.load.getConfig("client"))
 
     // create the result listener, which will print the result and shutdown the system
-    val listener = system.actorOf(Props[Client], name = "listener")
+    val listener = system.actorOf(Props[ResultListener], name = "listener")
 
     // create the master
     val master = system.actorOf(Props(new Accumulator(nrOfMessages, nrOfElements, listener)),
