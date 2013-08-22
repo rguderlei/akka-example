@@ -15,7 +15,7 @@ class Accumulator(nrOfMessages: Int, nrOfElements: Int, listener: ActorRef) exte
 
   def receive = {
     case Calculate =>
-    for (i ← 0 until nrOfMessages) workerRouter ! Work(i * nrOfElements, nrOfElements)
+    for (i <- 0 until nrOfMessages) workerRouter ! Work(i * nrOfElements, nrOfElements)
     case Result(value) =>
     pi += value
     nrOfResults += 1
